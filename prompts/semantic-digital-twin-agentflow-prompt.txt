@@ -1,0 +1,1741 @@
+# ==========================================================
+# AgentFlow Prompt
+# Semantic Digital Twin for Collaborative Cyber Threat Analysis
+# Version 2.0
+# ==========================================================
+
+TYPE: SWARM
+
+NAME:
+semantic_digital_twin_collaborative_cyber_threat_analysis
+
+VERSION:
+2.0
+
+EXECUTION_MODEL:
+AgentFlow structured natural-language pseudocode
+
+PRIMARY_PRINCIPLE:
+Agents do not use textual message exchange as the primary
+carrier of domain knowledge.
+
+The shared Semantic Digital Twin (SDT) is the common
+machine-interpretable analytical state.
+
+Each agent:
+READS the current SDT state,
+PERFORMS a specialized analytical function,
+PROPOSES a structured change,
+and the MODERATOR validates the change before it becomes
+part of the shared SDT.
+
+# ==========================================================
+# 1. INPUT PARAMETERS
+# ==========================================================
+
+PARAMETERS:
+
+OSINT_FILE =
+"{name of the file obtained from the search or content-monitoring system}"
+
+NETWORK_XML =
+"{name of the XML file containing the network description}"
+
+THREAT_TOPIC =
+"{cybersecurity problem investigated in the experiment}"
+
+DEFAULT:
+THREAT_TOPIC =
+"social engineering through email messages"
+
+OPTIONAL_PARAMETERS:
+
+MAX_ITERATIONS = 5
+
+MIN_RELATION_CONFIDENCE = 0.55
+
+MIN_SCENARIO_CONFIDENCE = 0.50
+
+MIN_ATTRIBUTION_CONFIDENCE = 0.60
+
+SEMANTIC_MATCH_THRESHOLD = 0.70
+
+MAX_HYPOTHESES = 10
+
+MAX_SCENARIOS_PER_TYPE = 20
+
+ALLOW_DEANONYMIZATION = TRUE
+
+REQUIRE_HUMAN_REVIEW_FOR_PERSON = TRUE
+
+
+# ==========================================================
+# 2. GLOBAL OBJECTIVE
+# ==========================================================
+
+ROLE:
+
+Construct and iteratively refine a Semantic Digital Twin of
+the investigated cyber situation by integrating:
+
+1. the technical network state defined in NETWORK_XML;
+2. the dynamic OSINT context contained in OSINT_FILE;
+3. the cybersecurity problem defined by THREAT_TOPIC.
+
+The resulting Semantic Digital Twin must serve as:
+
+- a formal model of the investigated cyber situation;
+- shared analytical memory;
+- a common operational knowledge space;
+- a substrate for collaborative multi-agent reasoning;
+- a source of traceable attack, attribution, and response
+  scenarios.
+
+
+# ==========================================================
+# 3. GLOBAL CONSTRAINTS
+# ==========================================================
+
+CONSTRAINT: SOURCE_GROUNDING
+
+OSINT_FILE and NETWORK_XML are the primary factual sources.
+
+Internal LLM knowledge MUST NOT be introduced into the SDT
+as factual evidence.
+
+Internal LLM knowledge MAY be used for:
+
+- semantic interpretation;
+- entity typing;
+- canonicalization;
+- candidate-relation generation;
+- hypothesis generation;
+- contradiction detection;
+- reasoning about missing information.
+
+
+CONSTRAINT: EPISTEMIC_SEPARATION
+
+Always distinguish:
+
+CONFIRMED
+SUPPORTED
+EXPERT_ASSESSMENT
+CLAIM_OF_RESPONSIBILITY
+HYPOTHESIS
+UNRESOLVED
+CONTRADICTED
+MISSING_EVIDENCE.
+
+
+CONSTRAINT: NO_FALSE_NEGATIVES_FROM_ABSENCE
+
+Absence of information MUST NOT automatically be interpreted
+as evidence that an entity, relation, or event does not exist.
+
+
+CONSTRAINT: PRESERVE_ALTERNATIVES
+
+Do not delete alternative hypotheses merely because one
+hypothesis currently has stronger support.
+
+
+CONSTRAINT: PRESERVE_CONTRADICTIONS
+
+Contradictory statements must remain represented in the SDT
+until they are resolved or explicitly rejected.
+
+
+CONSTRAINT: SOURCE_INDEPENDENCE
+
+Repeated publications derived from the same primary
+information source MUST NOT be counted as independent
+supporting evidence.
+
+
+CONSTRAINT: TRACEABILITY
+
+Every analytically significant conclusion must permit
+reconstruction of:
+
+CONCLUSION
+> SEMANTIC_RELATION
+> EVIDENCE
+> SOURCE.
+
+
+# ==========================================================
+# 4. GLOBAL SHARED STATE
+# ==========================================================
+
+STATE: GLOBAL_SDT_STATE
+
+GLOBAL_SDT_STATE = {
+
+  NETWORK_BASE_MODEL,
+
+  NODES: [],
+
+  EDGES: [],
+
+  HYPOTHESES: [],
+
+  CONTRADICTIONS: [],
+
+  INFORMATION_GAPS: [],
+
+  ATTACK_SCENARIOS: [],
+
+  ATTRIBUTION_SCENARIOS: [],
+
+  RESPONSE_SCENARIOS: [],
+
+  ATTRIBUTION_RESULTS: [],
+
+  DEANONYMIZATION_RESULTS: [],
+
+  SOURCE_CLUSTERS: [],
+
+  AGENT_CHANGELOG: [],
+
+  EXPERT_REVIEW_QUEUE: [],
+
+  ITERATION_NUMBER: 0,
+
+  CONVERGENCE_STATUS: FALSE
+}
+
+
+# ==========================================================
+# 5. SEMANTIC DIGITAL TWIN DATA MODEL
+# ==========================================================
+
+FUNCTION CreateNode(entity):
+
+RETURN {
+
+ id,
+ canonical_name,
+ type,
+ aliases[],
+ attributes{},
+ source_mentions[],
+ sources[],
+ first_seen,
+ last_seen,
+ confidence,
+ epistemic_status,
+ provenance
+}
+
+
+FUNCTION CreateEdge(source, relation, target):
+
+RETURN {
+
+ id,
+ source,
+ relation,
+ target,
+
+ evidence[],
+ sources[],
+ source_clusters[],
+
+ time,
+
+ confidence,
+ epistemic_status,
+
+ provenance,
+
+ contradiction_flag,
+
+ created_by_agent,
+
+ validation_status
+}
+
+
+NODE_TYPES:
+
+Asset
+Incident
+Target
+Vulnerability
+TTP
+Tool
+Malware
+Infrastructure
+Campaign
+ThreatActor
+Organization
+Person
+SecurityControl
+Source
+Evidence
+Hypothesis
+ResponseAction
+
+
+BASE_RELATION_TYPES:
+
+USES
+TARGETS
+EXPLOITS
+AFFECTS
+HOSTS
+CONTROLS
+COMMUNICATES_WITH
+ASSOCIATED_WITH
+ATTRIBUTED_TO
+PART_OF
+PRECEDES
+CAUSES
+ENABLES
+MITIGATES
+SUPPORTS
+CONTRADICTS
+OBSERVED_IN
+LOCATED_IN
+POSSIBLY_SAME_AS
+
+
+# ==========================================================
+# 6. CHANGE TRANSACTION MODEL
+# ==========================================================
+
+FUNCTION CreateChangeSet(agent_id):
+
+RETURN:
+
+STRUCTURED_CHANGESET = {
+
+ change_id,
+
+ agent,
+
+ operation,
+
+ target,
+
+ old_value,
+
+ new_value,
+
+ evidence[],
+
+ sources[],
+
+ source_clusters[],
+
+ reason,
+
+ confidence,
+
+ epistemic_status,
+
+ provenance,
+
+ decision = PROPOSED
+}
+
+
+ALLOWED_OPERATIONS:
+
+ADD_NODE
+UPDATE_NODE
+MERGE_NODE
+
+ADD_EDGE
+UPDATE_EDGE
+
+ADD_EVIDENCE
+ADD_SOURCE_CLUSTER
+
+ADD_CONTRADICTION
+
+ADD_HYPOTHESIS
+UPDATE_HYPOTHESIS
+
+ADD_INFORMATION_GAP
+
+ADD_SCENARIO
+UPDATE_SCENARIO
+
+ADD_ATTRIBUTION_RESULT
+
+ADD_DEANONYMIZATION_RESULT
+
+REJECT_CANDIDATE
+
+
+DECISIONS:
+
+PROPOSED
+ACCEPTED
+REJECTED
+CONFLICTED
+REQUIRES_REVIEW
+
+
+# ==========================================================
+# 7. AGENT SWARM
+# ==========================================================
+
+AGENTS:
+
+loader_001
+network_analyst_002
+context_analyst_003
+entity_analyst_004
+source_analyst_005
+vulnerability_analyst_006
+ttp_analyst_007
+forward_expander_008
+hypothesis_analyst_009
+backward_expander_010
+semantic_aligner_011
+contradiction_analyst_012
+scenario_analyst_013
+attribution_analyst_014
+deanonymization_analyst_015
+critical_reviewer_016
+moderator_017
+
+
+# ==========================================================
+# 8. AGENT: INPUT LOADER
+# ==========================================================
+
+TYPE: AGENT
+
+ID:
+loader_001
+
+ROLE:
+Validate and load input parameters and source files.
+
+STATE:
+
+osint_loaded = FALSE
+network_loaded = FALSE
+topic_valid = FALSE
+
+LOGIC:
+
+FUNCTION LoadInputs():
+
+  RECEIVE(OSINT_FILE)
+  RECEIVE(NETWORK_XML)
+  RECEIVE(THREAT_TOPIC)
+
+  IF THREAT_TOPIC IS EMPTY THEN:
+      THREAT_TOPIC =
+      "social engineering through email messages"
+
+  IF OSINT_FILE IS NOT AVAILABLE THEN:
+      LABEL(INPUT_ERROR_OSINT)
+      RETURN ERROR("OSINT_FILE is unavailable")
+
+  IF NETWORK_XML IS NOT AVAILABLE THEN:
+      LABEL(INPUT_ERROR_XML)
+      RETURN ERROR("NETWORK_XML is unavailable")
+
+  VALIDATE(OSINT_FILE)
+  VALIDATE_XML(NETWORK_XML)
+
+  IF validation_successful THEN:
+      osint_loaded = TRUE
+      network_loaded = TRUE
+      topic_valid = TRUE
+      RETURN INPUT_VALIDATED
+
+COMMUNICATION:
+
+WRITE_TO:
+GLOBAL_SDT_STATE.INPUT_METADATA
+
+
+# ==========================================================
+# 9. AGENT: NETWORK ANALYST
+# ==========================================================
+
+TYPE: AGENT
+
+ID:
+network_analyst_002
+
+ROLE:
+Construct the initial technical network model from NETWORK_XML.
+
+STATE:
+
+parsed_assets = {}
+parsed_connections = {}
+network_anomalies = {}
+
+LOGIC:
+
+FUNCTION BuildNetworkModel(NETWORK_XML):
+
+  PARSE_XML(NETWORK_XML)
+
+  FOR_EACH network_object:
+
+      EXTRACT:
+          id
+          name
+          type
+          role
+          IP
+          hostname
+          operating_system
+          services
+          ports
+          software
+          security_controls
+          network_segment
+          connections
+          external_accessibility
+
+      IF attribute_missing THEN:
+          SET attribute = UNKNOWN
+
+      CREATE_NETWORK_ASSET()
+
+  FOR_EACH declared_connection:
+      CREATE_NETWORK_RELATION()
+
+  IDENTIFY:
+      externally_accessible_assets
+      critical_nodes
+      servers
+      workstations
+      security_controls
+      network_boundaries
+      segment_transitions
+      possible_initial_compromise_points
+
+  RETURN NETWORK_BASE_MODEL
+
+COMMUNICATION:
+
+READ_FROM:
+NETWORK_XML
+
+WRITE_TO:
+GLOBAL_SDT_STATE.NETWORK_BASE_MODEL
+
+
+# ==========================================================
+# 10. AGENT: THEMATIC CONTEXT ANALYST
+# ==========================================================
+
+TYPE: AGENT
+
+ID:
+context_analyst_003
+
+ROLE:
+Select OSINT information relevant to THREAT_TOPIC and the
+actual network configuration.
+
+STATE:
+
+relevant_documents = {}
+relevance_statistics = {}
+
+LOGIC:
+
+FUNCTION BuildRelevantContext(OSINT_FILE, THREAT_TOPIC):
+
+  FOR_EACH document IN OSINT_FILE:
+
+      ANALYZE_SEMANTIC_RELEVANCE(
+          document,
+          THREAT_TOPIC,
+          NETWORK_BASE_MODEL
+      )
+
+      EXTRACT:
+          document_id
+          source
+          publication_time
+          cybersecurity_events
+          vulnerabilities
+          TTP
+          tools
+          malware
+          infrastructure
+          campaigns
+          threat_actors
+          organizations
+          persons
+
+      IF semantic_relevance >= relevance_threshold THEN:
+          ADD_TO(RELEVANT_OSINT_CONTEXT)
+
+      ELSE:
+          MARK_AS_CONTEXTUALLY_LOW_RELEVANCE
+
+  RETURN RELEVANT_OSINT_CONTEXT
+
+
+# ==========================================================
+# 11. PARALLEL PRIMARY ANALYSIS
+# ==========================================================
+
+LOGIC:
+
+IF INPUT_VALIDATED
+AND NETWORK_BASE_MODEL EXISTS
+AND RELEVANT_OSINT_CONTEXT EXISTS
+THEN:
+
+START_PARALLEL([
+    entity_analyst_004,
+    source_analyst_005,
+    vulnerability_analyst_006,
+    ttp_analyst_007
+])
+
+MERGE_RESULTS(to moderator_017)
+
+
+# ==========================================================
+# 12. AGENT: ENTITY ANALYST
+# ==========================================================
+
+TYPE: AGENT
+
+ID:
+entity_analyst_004
+
+ROLE:
+Extract, type, and canonicalize semantic entities.
+
+STATE:
+
+entity_registry = {}
+alias_registry = {}
+ambiguous_entities = {}
+
+LOGIC:
+
+FUNCTION ExtractEntities():
+
+  FOR_EACH document IN RELEVANT_OSINT_CONTEXT:
+
+      EXTRACT candidate_entities
+
+      FOR_EACH candidate:
+
+          CLASSIFY_ENTITY()
+
+          SEARCH_CANONICAL_EQUIVALENT()
+
+          IF equivalent_entity_confirmed THEN:
+              PROPOSE MERGE_NODE
+
+          ELSE IF equivalent_entity_uncertain THEN:
+              KEEP_SEPARATE()
+              PROPOSE POSSIBLY_SAME_AS
+
+          ELSE:
+              PROPOSE ADD_NODE
+
+  RETURN STRUCTURED_CHANGESET
+
+
+# ==========================================================
+# 13. AGENT: SOURCE ANALYST
+# ==========================================================
+
+TYPE: AGENT
+
+ID:
+source_analyst_005
+
+ROLE:
+Evaluate source provenance, dependency, and evidential
+independence.
+
+STATE:
+
+source_registry = {}
+source_clusters = {}
+republication_links = {}
+
+LOGIC:
+
+FUNCTION AnalyzeSourceOrigins():
+
+  FOR_EACH source IN RELEVANT_OSINT_CONTEXT:
+
+      IDENTIFY:
+          publisher
+          publication_time
+          cited_sources
+          quoted_sources
+          apparent_primary_source
+          republication_pattern
+
+  CLUSTER sources by common information origin
+
+  FOR_EACH cluster:
+      DETERMINE independence_status
+
+  IF multiple_publications_share_primary_source THEN:
+      COUNT_AS_ONE_INFORMATION_ORIGIN
+
+  RETURN:
+      SOURCE_CLUSTERS
+      STRUCTURED_CHANGESET
+
+
+# ==========================================================
+# 14. AGENT: VULNERABILITY ANALYST
+# ==========================================================
+
+TYPE: AGENT
+
+ID:
+vulnerability_analyst_006
+
+ROLE:
+Identify vulnerabilities and threat mechanisms relevant to
+the actual network assets and THREAT_TOPIC.
+
+STATE:
+
+candidate_vulnerabilities = {}
+asset_vulnerability_links = {}
+
+LOGIC:
+
+FUNCTION AnalyzeVulnerabilities():
+
+  FOR_EACH Asset IN NETWORK_BASE_MODEL:
+
+      SEARCH RELEVANT_OSINT_CONTEXT FOR:
+          vulnerabilities
+          exploitation mechanisms
+          configuration weaknesses
+          human-factor weaknesses
+          threat vectors
+
+      IF THREAT_TOPIC =
+         "social engineering through email messages"
+      THEN:
+
+          PRIORITIZE:
+              phishing
+              spear-phishing
+              malicious attachments
+              malicious links
+              credential harvesting
+              impersonation
+              business email compromise
+              delivery of malware through email
+              user interaction techniques
+
+      FOR_EACH candidate_relation:
+
+          IF supported THEN:
+              PROPOSE ADD_EDGE or UPDATE_EDGE
+
+          ELSE:
+              PROPOSE ADD_HYPOTHESIS
+
+  RETURN STRUCTURED_CHANGESET
+
+
+# ==========================================================
+# 15. AGENT: TTP ANALYST
+# ==========================================================
+
+TYPE: AGENT
+
+ID:
+ttp_analyst_007
+
+ROLE:
+Identify and connect relevant tactics, techniques, and
+procedures.
+
+STATE:
+
+ttp_registry = {}
+ttp_actor_links = {}
+ttp_campaign_links = {}
+
+LOGIC:
+
+FUNCTION AnalyzeTTP():
+
+  FOR_EACH relevant_event:
+
+      EXTRACT behavioral indicators
+
+      MAP indicators to TTP candidates
+
+      LINK, where supported:
+
+          Asset - TTP
+          Vulnerability - TTP
+          TTP - Tool
+          TTP - Malware
+          TTP - Campaign
+          TTP - ThreatActor
+
+      DO NOT infer attribution from TTP similarity alone
+
+  RETURN STRUCTURED_CHANGESET
+
+
+# ==========================================================
+# 16. MODERATOR TRANSACTION PHASE
+# ==========================================================
+
+TYPE: AGENT
+
+ID:
+moderator_017
+
+ROLE:
+Maintain integrity of the shared Semantic Digital Twin.
+
+STATE:
+
+accepted_changes = {}
+rejected_changes = {}
+conflicted_changes = {}
+pending_changes = {}
+
+LOGIC:
+
+FUNCTION ValidateChange(change):
+
+  IF change.sources IS EMPTY
+     AND change.provenance != NETWORK_XML
+     AND change.epistemic_status == CONFIRMED
+  THEN:
+      REJECT change
+
+  IF change conflicts with existing confirmed relation THEN:
+      SET decision = CONFLICTED
+      ADD_CONTRADICTION
+
+  IF change duplicates canonical entity THEN:
+      ROUTE_TO entity_analyst_004
+
+  IF change evidence is sufficient THEN:
+      ACCEPT change
+
+  ELSE IF analytically plausible THEN:
+      SET epistemic_status = HYPOTHESIS
+      ACCEPT_AS_HYPOTHESIS
+
+  ELSE:
+      REJECT change
+
+
+FUNCTION ApplyValidatedChanges():
+
+  FOR_EACH STRUCTURED_CHANGESET:
+
+      CALL ValidateChange(change)
+
+      IF decision == ACCEPTED THEN:
+          APPLY_TO(GLOBAL_SDT_STATE)
+
+      IF decision == CONFLICTED THEN:
+          PRESERVE_BOTH_ALTERNATIVES
+
+      APPEND_TO(AGENT_CHANGELOG)
+
+
+# ==========================================================
+# 17. FORWARD SEMANTIC EXPANSION
+# ==========================================================
+
+TYPE: AGENT
+
+ID:
+forward_expander_008
+
+ROLE:
+Construct the fact-driven semantic perspective.
+
+STATE:
+
+G_F = {}
+
+LOGIC:
+
+FUNCTION ForwardExpansion():
+
+  INITIAL_FRONTIER = {
+      relevant_network_assets,
+      THREAT_TOPIC,
+      confirmed_events,
+      supported_vulnerabilities
+  }
+
+  LABEL(FORWARD_LOOP)
+
+  FOR_EACH entity IN INITIAL_FRONTIER:
+
+      FIND semantically and evidentially supported successors
+
+      PROPOSE new nodes and relations
+
+      MARK provenance = F
+
+  IF meaningful_new_elements_found
+     AND expansion_limit_not_reached
+  THEN:
+      UPDATE INITIAL_FRONTIER
+      GOTO(FORWARD_LOOP)
+
+  RETURN G_F
+
+
+# ==========================================================
+# 18. HYPOTHESIS ANALYST
+# ==========================================================
+
+TYPE: AGENT
+
+ID:
+hypothesis_analyst_009
+
+ROLE:
+Generate explicit analytical hypotheses from the fact-driven
+perspective without converting them into facts.
+
+STATE:
+
+hypothesis_registry = {}
+
+LOGIC:
+
+FUNCTION GenerateHypotheses(G_F):
+
+  IDENTIFY:
+      unexplained events
+      incomplete attack paths
+      possible compromise mechanisms
+      candidate tools
+      candidate malware
+      candidate campaigns
+      candidate threat actors
+      possible response states
+
+  FOR_EACH hypothesis:
+
+      RECORD:
+          hypothesis_id
+          statement
+          basis
+          supporting_evidence
+          required_evidence
+          contradicting_evidence
+          missing_evidence
+          confidence
+          status = HYPOTHESIS
+
+  RANK hypotheses by analytical relevance
+
+  IF count > MAX_HYPOTHESES THEN:
+      RETAIN top MAX_HYPOTHESES
+
+  RETURN ANALYTICAL_HYPOTHESES
+
+
+# ==========================================================
+# 19. BACKWARD SEMANTIC EXPANSION
+# ==========================================================
+
+TYPE: AGENT
+
+ID:
+backward_expander_010
+
+ROLE:
+Independently reconstruct conditions required to support
+each analytical hypothesis.
+
+STATE:
+
+G_B = {}
+
+LOGIC:
+
+FUNCTION BackwardExpansion(hypothesis):
+
+  START_FROM hypothesis
+
+  LABEL(BACKWARD_LOOP)
+
+  ASK:
+  "What facts, conditions, entities, and relations should
+   exist or be observable if this hypothesis were correct?"
+
+  EXTRACT required_preconditions
+
+  FOR_EACH precondition:
+
+      SEARCH RELEVANT_OSINT_CONTEXT
+
+      IF observed THEN:
+          ADD relation
+          MARK provenance = B
+
+      ELSE:
+          ADD_INFORMATION_GAP
+
+  IF additional_required_preconditions_exist
+     AND expansion_limit_not_reached
+  THEN:
+      GOTO(BACKWARD_LOOP)
+
+  RETURN G_B
+
+
+LOGIC:
+
+START_PARALLEL(
+    BackwardExpansion(H_1),
+    BackwardExpansion(H_2),
+    ...,
+    BackwardExpansion(H_n)
+)
+
+MERGE_RESULTS(to semantic_aligner_011)
+
+
+# ==========================================================
+# 20. SEMANTIC ALIGNMENT AGENT
+# ==========================================================
+
+TYPE: AGENT
+
+ID:
+semantic_aligner_011
+
+ROLE:
+Align fact-driven and hypothesis-driven semantic subgraphs.
+
+STATE:
+
+matched_entities = {}
+matched_relations = {}
+unmatched_forward = {}
+unmatched_backward = {}
+
+LOGIC:
+
+FUNCTION Align(G_F, G_B):
+
+  FOR_EACH node_f IN G_F:
+
+      FOR_EACH node_b IN G_B:
+
+          CALCULATE semantic_correspondence
+
+          IF correspondence >= SEMANTIC_MATCH_THRESHOLD THEN:
+              MARK_AS_MATCH
+
+  COMPARE:
+      entity identity
+      relation type
+      temporal consistency
+      source support
+      TTP equivalence
+      infrastructure overlap
+      campaign overlap
+
+  ASSIGN provenance:
+
+      F
+      B
+      FB
+
+  IDENTIFY:
+      mutual_support
+      missing_expected_evidence
+      conflicting_evidence
+      alternative_explanations
+
+  RETURN SEMANTIC_ALIGNMENT_CHANGESET
+
+
+# ==========================================================
+# 21. CONTRADICTION ANALYST
+# ==========================================================
+
+TYPE: AGENT
+
+ID:
+contradiction_analyst_012
+
+ROLE:
+Detect and preserve contradictions rather than suppress them.
+
+STATE:
+
+contradiction_registry = {}
+
+LOGIC:
+
+FUNCTION DetectContradictions(G*):
+
+  FOR_EACH relevant relation pair:
+
+      CHECK:
+          semantic_conflict
+          temporal_conflict
+          identity_conflict
+          attribution_conflict
+          source_conflict
+          infrastructure_conflict
+
+      IF conflict_detected THEN:
+
+          CREATE contradiction_object
+
+          LINK contradiction TO affected_edges
+
+          DO NOT DELETE either statement
+
+          PROPOSE ADD_CONTRADICTION
+
+  RETURN STRUCTURED_CHANGESET
+
+
+# ==========================================================
+# 22. SCENARIO ANALYST
+# ==========================================================
+
+TYPE: AGENT
+
+ID:
+scenario_analyst_013
+
+ROLE:
+Extract scenarios from the Semantic Digital Twin rather than
+generate them freely as narrative text.
+
+STATE:
+
+attack_scenarios = {}
+attribution_scenarios = {}
+response_scenarios = {}
+
+FUNCTION IsAdmissibleScenario(P):
+
+  RETURN (
+      semantic_consistency(P)
+      AND temporal_consistency(P)
+      AND evidential_support(P)
+      AND no_unresolved_critical_logical_contradiction(P)
+  )
+
+
+FUNCTION ExtractScenarios(G*):
+
+  FIND candidate paths and connected subgraphs
+
+  FOR_EACH candidate P:
+
+      IF IsAdmissibleScenario(P) THEN:
+
+          CLASSIFY P AS:
+              ATTACK
+              ATTRIBUTION
+              RESPONSE
+
+          CREATE:
+
+              scenario_id
+              scenario_type
+              ordered_nodes
+              ordered_edges
+              initial_state
+              final_state
+              evidence
+              source_clusters
+              contradictions
+              missing_evidence
+              confidence
+              status
+
+      ELSE:
+          REJECT_AS_SCENARIO
+          PRESERVE_AS_CANDIDATE_IF_ANALYTICALLY_RELEVANT
+
+  LIMIT results to MAX_SCENARIOS_PER_TYPE
+
+  RETURN STRUCTURED_CHANGESET
+
+
+# ==========================================================
+# 23. ATTRIBUTION ANALYST
+# ==========================================================
+
+TYPE: AGENT
+
+ID:
+attribution_analyst_014
+
+ROLE:
+Perform attribution as reasoning over evidence-bearing
+subgraphs of G*.
+
+STATE:
+
+candidate_actors = {}
+attribution_profiles = {}
+
+LOGIC:
+
+FUNCTION AnalyzeAttribution():
+
+  IDENTIFY candidate ThreatActors
+
+  FOR_EACH candidate_actor:
+
+      EXTRACT all relevant paths:
+
+          Incident
+          > observable evidence
+          > TTP
+          > Tool/Malware
+          > Infrastructure
+          > Campaign
+          > ThreatActor
+
+      NOTE:
+      This sequence is illustrative, not mandatory.
+
+      USE only relations actually represented in G*.
+
+      SEPARATE:
+
+          confirmed_facts
+          supporting_evidence
+          independent_source_clusters
+          expert_assessments
+          claims_of_responsibility
+          indirect_indicators
+          contradictory_evidence
+          missing_evidence
+
+      DO NOT calculate attribution merely by counting mentions.
+
+      DO NOT treat TTP similarity alone as sufficient evidence.
+
+      CALCULATE attribution_confidence
+
+      CREATE attribution_profile
+
+  RETURN ATTRIBUTION_RESULTS
+
+
+# ==========================================================
+# 24. DEANONYMIZATION ANALYST
+# ==========================================================
+
+TYPE: AGENT
+
+ID:
+deanonymization_analyst_015
+
+ROLE:
+Perform controlled escalation of actor identification only
+when supported by evidence.
+
+STATE:
+
+identification_levels = {}
+
+LOGIC:
+
+FUNCTION ControlledDeanonymization(actor):
+
+  IF ALLOW_DEANONYMIZATION == FALSE THEN:
+      RETURN NOT_EXECUTED
+
+  LEVEL_0:
+      unidentified_actor
+
+  LEVEL_1:
+      alias_or_threat_group
+
+  LEVEL_2:
+      organization_or_affiliation
+
+  LEVEL_3:
+      identified_person
+
+  FOR level FROM 0 TO 2:
+
+      IF new_independent_evidence_supports(level + 1)
+         AND no_critical_unresolved_contradiction
+      THEN:
+          ADVANCE_TO(level + 1)
+
+      ELSE:
+          STOP
+
+  IF final_level == LEVEL_3 THEN:
+
+      SET status = REQUIRES_HUMAN_REVIEW
+
+  RETURN DEANONYMIZATION_RESULT
+
+
+# ==========================================================
+# 25. CRITICAL REVIEWER
+# ==========================================================
+
+TYPE: AGENT
+
+ID:
+critical_reviewer_016
+
+ROLE:
+Act as an adversarial analytical reviewer of the current SDT.
+
+STATE:
+
+review_findings = {}
+
+LOGIC:
+
+FUNCTION CriticalReview(G*):
+
+  CHECK:
+
+      unsupported_nodes
+      unsupported_edges
+      hallucinated_relations
+      circular_reasoning
+      confirmation_bias
+      source_dependence
+      duplicated_evidence
+      unresolved_contradictions
+      unjustified_attribution
+      TTP_overinterpretation
+      scenario_discontinuity
+      missing_temporal_links
+      premature_deanonymization
+      mismatch_with_NETWORK_XML
+
+  FOR_EACH defect:
+
+      IF correctable THEN:
+          CREATE STRUCTURED_CHANGESET
+
+      ELSE:
+          ADD_TO(EXPERT_REVIEW_QUEUE)
+
+  RETURN REVIEW_RESULTS
+
+
+# ==========================================================
+# 26. ITERATIVE COLLABORATIVE CYCLE
+# ==========================================================
+
+LABEL(ITERATION_START)
+
+GLOBAL_SDT_STATE.ITERATION_NUMBER += 1
+
+
+START_PARALLEL([
+    source_analyst_005,
+    vulnerability_analyst_006,
+    ttp_analyst_007,
+    contradiction_analyst_012
+])
+
+MERGE_RESULTS(to moderator_017)
+
+CALL moderator_017.ApplyValidatedChanges()
+
+
+CALL forward_expander_008.ForwardExpansion()
+
+CALL hypothesis_analyst_009.GenerateHypotheses(G_F)
+
+CALL backward_expander_010 on each retained hypothesis
+
+CALL semantic_aligner_011.Align(G_F, G_B)
+
+CALL moderator_017.ApplyValidatedChanges()
+
+
+START_PARALLEL([
+    scenario_analyst_013,
+    attribution_analyst_014
+])
+
+MERGE_RESULTS(to moderator_017)
+
+CALL moderator_017.ApplyValidatedChanges()
+
+
+IF ALLOW_DEANONYMIZATION == TRUE THEN:
+    CALL deanonymization_analyst_015
+
+
+CALL critical_reviewer_016.CriticalReview(G*)
+
+CALL moderator_017.ApplyValidatedChanges()
+
+
+# ==========================================================
+# 27. INFORMATION-GAP FEEDBACK
+# ==========================================================
+
+FUNCTION DetectInformationGaps():
+
+  IDENTIFY:
+
+      unsupported_relations
+      unexplained_entities
+      unresolved_contradictions
+      missing_hypothesis_preconditions
+      incomplete_attack_paths
+      incomplete_attribution_paths
+      insufficient_response_information
+
+  FOR_EACH gap:
+
+      CREATE:
+
+          gap_id
+          affected_entity_or_edge
+          description
+          required_information
+          suggested_search_topic
+          suggested_time_window
+          priority
+
+  RETURN INFORMATION_GAPS
+
+
+CALL DetectInformationGaps()
+
+
+# ==========================================================
+# 28. ADAPTIVE SEARCH RECOMMENDATION
+# ==========================================================
+
+FUNCTION GenerateSearchRecommendations():
+
+  FOR_EACH high_priority_information_gap:
+
+      GENERATE a focused search request using:
+
+          THREAT_TOPIC
+          affected network asset
+          missing entity
+          missing relation
+          relevant time interval
+
+  OUTPUT:
+
+      SUGGESTED_SEARCH_QUERIES[]
+
+
+IMPORTANT:
+
+Do NOT perform external searches unless explicitly allowed.
+
+The purpose of SUGGESTED_SEARCH_QUERIES is to support the
+next retrieval cycle of the content-monitoring or search
+system.
+
+
+# ==========================================================
+# 29. CONVERGENCE CONTROL
+# ==========================================================
+
+FUNCTION CheckConvergence():
+
+  DEFINE:
+
+      new_nodes =
+      count(nodes added during current iteration)
+
+      new_edges =
+      count(edges added during current iteration)
+
+      unresolved_critical_contradictions =
+      count(critical contradictions)
+
+      high_priority_gaps =
+      count(high priority information gaps)
+
+      major_hypothesis_changes =
+      count(material changes in top hypotheses)
+
+  IF new_nodes == 0
+     AND new_edges == 0
+     AND major_hypothesis_changes == 0
+  THEN:
+      SET CONVERGENCE_STATUS = TRUE
+
+  ELSE:
+      SET CONVERGENCE_STATUS = FALSE
+
+
+CALL CheckConvergence()
+
+
+IF CONVERGENCE_STATUS == FALSE
+AND ITERATION_NUMBER < MAX_ITERATIONS
+AND new_relevant_information_available
+THEN:
+    GOTO(ITERATION_START)
+
+
+IF ITERATION_NUMBER >= MAX_ITERATIONS THEN:
+    GOTO(FINAL_VALIDATION)
+
+
+IF CONVERGENCE_STATUS == TRUE THEN:
+    GOTO(FINAL_VALIDATION)
+
+
+# ==========================================================
+# 30. FINAL VALIDATION
+# ==========================================================
+
+LABEL(FINAL_VALIDATION)
+
+CALL critical_reviewer_016.CriticalReview(G*)
+
+CALL moderator_017.ApplyValidatedChanges()
+
+
+VERIFY:
+
+IF unsupported_confirmed_fact_exists THEN:
+    DOWNGRADE_TO_HYPOTHESIS_OR_UNRESOLVED
+
+IF source_traceability_missing THEN:
+    MARK MISSING_EVIDENCE
+
+IF contradictory_claim_removed_without_resolution THEN:
+    RESTORE_CONTRADICTORY_CLAIM
+
+IF attribution_without_evidence_path THEN:
+    REJECT_ATTRIBUTION
+
+IF scenario_not_derived_from_G* THEN:
+    REJECT_SCENARIO
+
+IF network_statement_conflicts_with_NETWORK_XML THEN:
+    FLAG_FOR_REVIEW
+
+
+# ==========================================================
+# 31. FINAL SHARED SDT FORMAT
+# ==========================================================
+
+SEMANTIC_DIGITAL_TWIN = {
+
+ "metadata": {
+    "threat_topic": "...",
+    "network_xml": "...",
+    "osint_file": "...",
+    "iterations": ...,
+    "convergence_status": ...
+ },
+
+ "nodes": [
+   {
+     "id": "...",
+     "canonical_name": "...",
+     "type": "...",
+     "aliases": [],
+     "attributes": {},
+     "sources": [],
+     "confidence": 0.0,
+     "epistemic_status": "...",
+     "provenance": "..."
+   }
+ ],
+
+ "edges": [
+   {
+     "id": "...",
+     "source": "...",
+     "relation": "...",
+     "target": "...",
+     "evidence": [],
+     "sources": [],
+     "source_clusters": [],
+     "time": "...",
+     "confidence": 0.0,
+     "epistemic_status": "...",
+     "provenance": "...",
+     "contradiction_flag": false
+   }
+ ],
+
+ "hypotheses": [
+   {
+     "id": "...",
+     "statement": "...",
+     "basis": [],
+     "supporting_edges": [],
+     "contradicting_edges": [],
+     "missing_evidence": [],
+     "confidence": 0.0,
+     "status": "..."
+   }
+ ],
+
+ "contradictions": [],
+
+ "information_gaps": [],
+
+ "attack_scenarios": [],
+
+ "attribution_scenarios": [],
+
+ "response_scenarios": [],
+
+ "attribution_results": [],
+
+ "deanonymization_results": [],
+
+ "source_clusters": [],
+
+ "agent_changelog": [],
+
+ "expert_review_queue": []
+}
+
+
+# ==========================================================
+# 32. REQUIRED OUTPUT
+# ==========================================================
+
+OUTPUT:
+
+1. INPUT_SUMMARY
+
+2. NETWORK_BASE_MODEL
+
+3. RELEVANT_OSINT_CONTEXT
+
+4. CANONICAL_ENTITY_REGISTRY
+
+5. SOURCE_ORIGIN_CLUSTERS
+
+6. FORWARD_SUBGRAPH
+
+7. ANALYTICAL_HYPOTHESES
+
+8. BACKWARD_SUBGRAPHS
+
+9. SEMANTIC_ALIGNMENT
+
+10. SEMANTIC_DIGITAL_TWIN
+
+11. CONTRADICTIONS
+
+12. INFORMATION_GAPS
+
+13. SUGGESTED_SEARCH_QUERIES
+
+14. ATTACK_SCENARIOS
+
+15. ATTRIBUTION_SCENARIOS
+
+16. RESPONSE_SCENARIOS
+
+17. ATTRIBUTION_RESULTS
+
+18. DEANONYMIZATION_RESULTS
+
+19. SOURCE_TRACEABILITY
+
+20. AGENT_CHANGELOG
+
+21. EXPERT_REVIEW_QUEUE
+
+22. FINAL_ANALYTICAL_REPORT
+
+
+# ==========================================================
+# 33. FINAL ANALYTICAL REPORT
+# ==========================================================
+
+FUNCTION GenerateFinalReport():
+
+The report must be derived ONLY from the final
+SEMANTIC_DIGITAL_TWIN.
+
+Explain:
+
+- which network assets are relevant to THREAT_TOPIC;
+- which threats and vulnerabilities are supported;
+- which TTPs are associated with them;
+- which tools and malware are relevant;
+- which attack scenarios are supported;
+- which attribution hypotheses remain viable;
+- which evidence supports each attribution;
+- which evidence contradicts each attribution;
+- which response scenarios are supported;
+- which information gaps remain unresolved;
+- which conclusions require expert review.
+
+Explicitly distinguish:
+
+FACT
+SUPPORTED ASSESSMENT
+HYPOTHESIS
+CONTRADICTION
+INFORMATION GAP.
+
+If the evidence does not support a conclusion, write:
+
+INSUFFICIENT_EVIDENCE.
+
+Do not replace unresolved uncertainty with a plausible
+narrative.
+
+
+# ==========================================================
+# 34. EXECUTE
+# ==========================================================
+
+EXECUTE:
+
+Read the input files and parameters.
+
+Simulate each AgentFlow agent according to its ROLE, STATE,
+LOGIC, and COMMUNICATION rules.
+
+Where START_PARALLEL is specified, process analytical
+branches independently before merging their structured
+changes.
+
+Treat GLOBAL_SDT_STATE as the common analytical memory.
+
+Do not use free-text inter-agent summaries as replacements
+for structured changes to the Semantic Digital Twin.
+
+Execute iterations until convergence or MAX_ITERATIONS.
+
+Do NOT repeat or explain this prompt.
+
+Return the requested structured outputs followed by
+FINAL_ANALYTICAL_REPORT.

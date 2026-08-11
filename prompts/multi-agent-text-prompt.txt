@@ -1,0 +1,1143 @@
+# ==========================================================
+# MULTI-AGENT TEXTUAL COLLABORATION PROMPT
+# Cyber Threat Analysis of a Corporate Network
+# Experimental Mode B
+# Version 1.0
+# ==========================================================
+
+TYPE: SWARM
+
+NAME:
+multi_agent_textual_cyber_threat_analysis
+
+VERSION:
+1.0
+
+EXECUTION_MODEL:
+Specialized multi-agent analysis with textual collaboration
+
+PRIMARY_PRINCIPLE:
+
+Specialized agents independently analyze different aspects
+of the same cybersecurity problem.
+
+Agents communicate analytical knowledge ONLY through
+textual reports.
+
+There is NO shared Semantic Digital Twin.
+
+There is NO persistent shared graph of entities and relations.
+
+There is NO structured transaction mechanism for modifying
+a common machine-interpretable analytical state.
+
+The MODERATOR receives textual outputs from specialized
+agents and synthesizes the final analytical result.
+
+
+# ==========================================================
+# 1. INPUT PARAMETERS
+# ==========================================================
+
+PARAMETERS:
+
+OSINT_FILE =
+"{name of the file obtained from the InfoStream system}"
+
+NETWORK_XML =
+"{name of the XML file containing the network description}"
+
+THREAT_TOPIC =
+"social engineering through email messages"
+
+
+# ==========================================================
+# 2. GLOBAL OBJECTIVE
+# ==========================================================
+
+Analyze the corporate network described in NETWORK_XML
+using the factual information contained in OSINT_FILE.
+
+Investigate the cybersecurity problem defined by
+THREAT_TOPIC.
+
+The analysis must identify:
+
+- relevant network assets;
+- possible initial compromise mechanisms;
+- relevant vulnerabilities and weaknesses;
+- tactics, techniques, and procedures (TTPs);
+- credential-access mechanisms;
+- privilege-escalation mechanisms;
+- lateral-movement mechanisms;
+- tools and malware;
+- possible attack scenarios;
+- possible attribution scenarios;
+- possible response scenarios;
+- contradictions;
+- information gaps;
+- source support for significant analytical conclusions.
+
+The initial analytical condition is:
+
+A user workstation may be compromised through email-based
+social engineering.
+
+Determine possible subsequent developments of the attack
+using only NETWORK_XML and OSINT_FILE.
+
+Do NOT assume in advance which internal asset becomes
+the final target.
+
+
+# ==========================================================
+# 3. EXPERIMENTAL RESTRICTION
+# ==========================================================
+
+IMPORTANT:
+
+This is MULTI-AGENT TEXTUAL COLLABORATION MODE.
+
+Use specialized analytical agents.
+
+Each agent independently analyzes its assigned aspect
+of the problem.
+
+Each agent returns a TEXTUAL ANALYTICAL REPORT.
+
+Agents MAY read:
+
+NETWORK_XML
+OSINT_FILE
+THREAT_TOPIC
+
+Agents MAY receive textual reports produced by other agents
+when explicitly specified by the workflow.
+
+Agents MUST NOT:
+
+- create a shared Semantic Digital Twin;
+- maintain a shared knowledge graph;
+- directly modify a common graph;
+- use structured change transactions;
+- use ADD_NODE / ADD_EDGE operations on shared state;
+- maintain persistent shared entity or relation registries;
+- use a common machine-interpretable analytical state.
+
+Knowledge transfer between agents must occur through
+TEXTUAL REPORTS.
+
+The MODERATOR must synthesize the final result from those
+reports.
+
+
+# ==========================================================
+# 4. SOURCE GROUNDING
+# ==========================================================
+
+NETWORK_XML and OSINT_FILE are the only factual sources.
+
+Internal LLM knowledge MUST NOT be introduced as factual
+evidence.
+
+Internal model knowledge MAY be used for:
+
+- semantic interpretation;
+- entity typing;
+- canonicalization;
+- interpretation of cybersecurity terminology;
+- hypothesis generation;
+- contradiction detection;
+- interpretation of relations.
+
+Every agent must distinguish:
+
+CONFIRMED
+SUPPORTED
+EXPERT_ASSESSMENT
+CLAIM_OF_RESPONSIBILITY
+HYPOTHESIS
+UNRESOLVED
+CONTRADICTED
+MISSING_EVIDENCE.
+
+If evidence is insufficient, explicitly return:
+
+INSUFFICIENT_EVIDENCE.
+
+
+# ==========================================================
+# 5. AGENT SWARM
+# ==========================================================
+
+AGENTS:
+
+network_analyst_001
+context_analyst_002
+entity_analyst_003
+source_analyst_004
+vulnerability_analyst_005
+ttp_analyst_006
+scenario_analyst_007
+attribution_analyst_008
+contradiction_analyst_009
+response_analyst_010
+critical_reviewer_011
+moderator_012
+
+
+# ==========================================================
+# 6. AGENT: NETWORK ANALYST
+# ==========================================================
+
+ID:
+network_analyst_001
+
+ROLE:
+
+Analyze the technical infrastructure represented in
+NETWORK_XML.
+
+TASK:
+
+Extract all explicitly represented network assets.
+
+For every asset identify, where available:
+
+- asset identifier;
+- name;
+- type;
+- role;
+- network segment;
+- IP address;
+- operating system;
+- services;
+- software;
+- security controls;
+- external accessibility;
+- network connections.
+
+Identify:
+
+- externally accessible assets;
+- user workstations;
+- servers;
+- Domain Controller / DNS resources;
+- internal services;
+- network boundaries;
+- critical internal assets;
+- possible initial compromise assets;
+- possible network transitions relevant to attack propagation.
+
+Do not reconstruct missing technical attributes.
+
+Use UNKNOWN where necessary.
+
+OUTPUT:
+
+NETWORK_ANALYST_REPORT
+
+
+# ==========================================================
+# 7. AGENT: CONTEXT ANALYST
+# ==========================================================
+
+ID:
+context_analyst_002
+
+ROLE:
+
+Determine which parts of OSINT_FILE are relevant to the
+investigated cybersecurity problem and network configuration.
+
+TASK:
+
+Analyze OSINT_FILE with respect to:
+
+THREAT_TOPIC =
+"social engineering through email messages"
+
+Give particular attention to information concerning:
+
+- phishing;
+- spear phishing;
+- malicious email;
+- malicious attachments;
+- fake IT support;
+- credential theft;
+- credential access;
+- credential dumping;
+- stolen credentials;
+- account compromise;
+- Active Directory;
+- Domain Controllers;
+- privilege escalation;
+- lateral movement;
+- Windows workstations;
+- internal networks.
+
+Identify relevant:
+
+events,
+threat mechanisms,
+vulnerabilities,
+TTPs,
+tools,
+malware,
+campaigns,
+infrastructure,
+threat actors,
+organizations.
+
+Preserve source references.
+
+OUTPUT:
+
+CONTEXT_ANALYST_REPORT
+
+
+# ==========================================================
+# 8. PARALLEL SPECIALIZED ANALYSIS
+# ==========================================================
+
+START_PARALLEL:
+
+entity_analyst_003
+source_analyst_004
+vulnerability_analyst_005
+ttp_analyst_006
+
+Each agent receives:
+
+NETWORK_XML
+OSINT_FILE
+THREAT_TOPIC
+NETWORK_ANALYST_REPORT
+CONTEXT_ANALYST_REPORT
+
+Agents work independently.
+
+They MUST NOT communicate through a shared graph.
+
+They return separate textual reports.
+
+
+# ==========================================================
+# 9. AGENT: ENTITY ANALYST
+# ==========================================================
+
+ID:
+entity_analyst_003
+
+ROLE:
+
+Identify and canonicalize relevant entities.
+
+TASK:
+
+Identify entities belonging, where applicable, to:
+
+Asset
+Incident
+Target
+Vulnerability
+TTP
+Tool
+Malware
+Infrastructure
+Campaign
+ThreatActor
+Organization
+Person
+SecurityControl
+Credential
+Account
+Evidence
+Source
+ResponseAction
+
+For every entity report:
+
+canonical_name
+entity_type
+aliases
+supporting_sources
+epistemic_status
+
+Identify possible semantic relations between entities.
+
+Do not merge uncertain aliases.
+
+OUTPUT:
+
+ENTITY_ANALYST_REPORT
+
+
+# ==========================================================
+# 10. AGENT: SOURCE ANALYST
+# ==========================================================
+
+ID:
+source_analyst_004
+
+ROLE:
+
+Analyze provenance and evidential independence.
+
+TASK:
+
+For significant statements identify:
+
+publisher
+publication_time
+cited_source
+quoted_source
+apparent_primary_information_origin
+possible_republication
+
+Determine whether multiple publications appear to derive
+from the same information origin.
+
+Repeated publications derived from the same apparent
+primary source must not automatically be treated as
+independent evidence.
+
+Identify claims for which provenance cannot be reliably
+established.
+
+OUTPUT:
+
+SOURCE_ANALYST_REPORT
+
+
+# ==========================================================
+# 11. AGENT: VULNERABILITY ANALYST
+# ==========================================================
+
+ID:
+vulnerability_analyst_005
+
+ROLE:
+
+Analyze vulnerabilities and threat mechanisms relevant
+to the actual network configuration.
+
+TASK:
+
+For each relevant network asset identify supported:
+
+- vulnerabilities;
+- configuration weaknesses;
+- human-factor weaknesses;
+- social-engineering exposure;
+- credential-related weaknesses;
+- attack-enabling conditions.
+
+For the current THREAT_TOPIC prioritize:
+
+phishing
+spear phishing
+malicious attachments
+malicious links
+credential harvesting
+fake IT support
+impersonation
+malware delivery through email
+user interaction
+credential compromise
+
+Distinguish:
+
+FACT
+SUPPORTED ASSESSMENT
+HYPOTHESIS
+MISSING_EVIDENCE
+
+OUTPUT:
+
+VULNERABILITY_ANALYST_REPORT
+
+
+# ==========================================================
+# 12. AGENT: TTP ANALYST
+# ==========================================================
+
+ID:
+ttp_analyst_006
+
+ROLE:
+
+Identify tactics, techniques, and procedures relevant to
+the investigated attack problem.
+
+TASK:
+
+Identify behavioral indicators and TTPs supported by
+OSINT_FILE.
+
+Where supported, relate TTPs textually to:
+
+network assets
+vulnerabilities
+credentials
+tools
+malware
+campaigns
+threat actors
+attack stages
+
+Pay particular attention to:
+
+initial access
+execution
+credential access
+discovery
+privilege escalation
+lateral movement
+persistence
+command and control
+
+Where ATT&CK identifiers occur explicitly in the supplied
+material, preserve them.
+
+Do NOT infer attribution from TTP similarity alone.
+
+OUTPUT:
+
+TTP_ANALYST_REPORT
+
+
+# ==========================================================
+# 13. INTERMEDIATE TEXTUAL INTEGRATION
+# ==========================================================
+
+The MODERATOR receives:
+
+NETWORK_ANALYST_REPORT
+CONTEXT_ANALYST_REPORT
+ENTITY_ANALYST_REPORT
+SOURCE_ANALYST_REPORT
+VULNERABILITY_ANALYST_REPORT
+TTP_ANALYST_REPORT
+
+The MODERATOR creates:
+
+INTERMEDIATE_ANALYTICAL_SUMMARY
+
+IMPORTANT:
+
+The INTERMEDIATE_ANALYTICAL_SUMMARY is TEXT.
+
+It is NOT a Semantic Digital Twin.
+
+It is NOT a persistent graph.
+
+The moderator may:
+
+- combine equivalent findings;
+- remove obvious textual duplication;
+- identify disagreements;
+- summarize evidence;
+- preserve alternative interpretations.
+
+The moderator MUST NOT create a shared machine-interpretable
+state that agents subsequently modify.
+
+
+# ==========================================================
+# 14. SECONDARY SPECIALIZED ANALYSIS
+# ==========================================================
+
+START_PARALLEL:
+
+scenario_analyst_007
+attribution_analyst_008
+contradiction_analyst_009
+response_analyst_010
+
+Each agent receives:
+
+NETWORK_XML
+OSINT_FILE
+THREAT_TOPIC
+INTERMEDIATE_ANALYTICAL_SUMMARY
+
+Each agent performs its analysis independently and returns
+a textual report.
+
+
+# ==========================================================
+# 15. AGENT: SCENARIO ANALYST
+# ==========================================================
+
+ID:
+scenario_analyst_007
+
+ROLE:
+
+Reconstruct possible attack scenarios from available
+technical and OSINT evidence.
+
+TASK:
+
+Starting from possible compromise of a user workstation
+through email-based social engineering, reconstruct
+supported attack developments.
+
+A possible general path may include:
+
+Social Engineering
+> Workstation Compromise
+> Discovery
+> Credential Access
+> Privilege Escalation
+> Lateral Movement
+> Internal Asset
+
+This structure is illustrative only.
+
+Do NOT force all stages to occur.
+
+For every scenario identify:
+
+scenario_id
+ordered_steps
+relevant_assets
+relevant_TTPs
+tools_or_malware
+initial_state
+possible_final_state
+supporting_evidence
+sources
+missing_evidence
+confidence
+epistemic_status
+
+Do not create unsupported transitions merely to complete
+an attack chain.
+
+OUTPUT:
+
+SCENARIO_ANALYST_REPORT
+
+
+# ==========================================================
+# 16. AGENT: ATTRIBUTION ANALYST
+# ==========================================================
+
+ID:
+attribution_analyst_008
+
+ROLE:
+
+Assess possible attribution hypotheses.
+
+TASK:
+
+Identify candidate Threat Actors only when OSINT_FILE
+contains relevant evidence.
+
+For every candidate distinguish:
+
+direct evidence
+indirect evidence
+TTP similarity
+malware association
+infrastructure association
+campaign association
+claims of responsibility
+expert assessments
+contradictory evidence
+missing evidence
+
+Do NOT infer attribution solely from:
+
+TTP similarity,
+mention frequency,
+or general historical knowledge.
+
+For every candidate provide:
+
+candidate_actor
+supporting_evidence
+contradicting_evidence
+sources
+confidence
+epistemic_status
+
+If attribution is unsupported return:
+
+SPECIFIC_ACTOR = NONE
+STATUS = INSUFFICIENT_EVIDENCE
+
+OUTPUT:
+
+ATTRIBUTION_ANALYST_REPORT
+
+
+# ==========================================================
+# 17. AGENT: CONTRADICTION ANALYST
+# ==========================================================
+
+ID:
+contradiction_analyst_009
+
+ROLE:
+
+Independently identify contradictions and competing
+interpretations.
+
+TASK:
+
+Compare claims contained in:
+
+INTERMEDIATE_ANALYTICAL_SUMMARY
+and relevant parts of OSINT_FILE.
+
+Identify:
+
+semantic conflicts
+temporal conflicts
+identity conflicts
+source conflicts
+attribution conflicts
+infrastructure conflicts
+
+Distinguish actual contradictions from:
+
+- alternative attack mechanisms;
+- complementary evidence;
+- missing information.
+
+For every contradiction provide:
+
+contradiction_id
+claim_1
+claim_2
+supporting_sources
+conflict_type
+analytical_significance
+status
+
+Do not suppress conflicting statements.
+
+OUTPUT:
+
+CONTRADICTION_ANALYST_REPORT
+
+
+# ==========================================================
+# 18. AGENT: RESPONSE ANALYST
+# ==========================================================
+
+ID:
+response_analyst_010
+
+ROLE:
+
+Determine possible response scenarios.
+
+TASK:
+
+Using identified attack mechanisms and the supplied
+evidence, identify supported defensive or response actions.
+
+Relate response actions to:
+
+attack stages
+affected assets
+credentials
+security controls
+lateral movement
+malware or tools
+network segments
+
+Distinguish:
+
+SOURCE_SUPPORTED_RESPONSE
+
+from:
+
+GENERAL_EXPERT_RECOMMENDATION
+
+For each response scenario provide:
+
+scenario_id
+trigger
+affected_assets
+response_actions
+supporting_sources
+confidence
+epistemic_status
+
+OUTPUT:
+
+RESPONSE_ANALYST_REPORT
+
+
+# ==========================================================
+# 19. FINAL TEXTUAL SYNTHESIS
+# ==========================================================
+
+The MODERATOR receives:
+
+INTERMEDIATE_ANALYTICAL_SUMMARY
+SCENARIO_ANALYST_REPORT
+ATTRIBUTION_ANALYST_REPORT
+CONTRADICTION_ANALYST_REPORT
+RESPONSE_ANALYST_REPORT
+
+The MODERATOR synthesizes:
+
+FINAL_TEXTUAL_SYNTHESIS
+
+During synthesis:
+
+- combine equivalent entities where sufficiently justified;
+- combine equivalent relations where sufficiently justified;
+- preserve relevant alternatives;
+- preserve unresolved contradictions;
+- preserve source references when possible;
+- avoid unsupported attribution;
+- identify missing evidence.
+
+IMPORTANT:
+
+The moderator works from TEXTUAL REPORTS.
+
+The moderator MUST NOT reconstruct a hidden Semantic Digital
+Twin or claim that a shared knowledge graph was maintained
+during collaboration.
+
+If information is lost, ambiguous, duplicated, or differently
+interpreted between reports, resolve it only when evidence
+permits.
+
+Otherwise preserve the uncertainty.
+
+
+# ==========================================================
+# 20. CRITICAL REVIEWER
+# ==========================================================
+
+ID:
+critical_reviewer_011
+
+ROLE:
+
+Critically inspect FINAL_TEXTUAL_SYNTHESIS.
+
+CHECK:
+
+unsupported factual claims
+unsupported relations
+source loss during synthesis
+duplicated evidence
+inconsistent entity naming
+contradictory statements
+confirmation bias
+unsupported attack transitions
+TTP overinterpretation
+unjustified attribution
+scenario discontinuity
+missing temporal relations
+
+For each detected problem recommend:
+
+CORRECT
+DOWNGRADE_TO_HYPOTHESIS
+MARK_UNRESOLVED
+REMOVE_UNSUPPORTED_CLAIM
+PRESERVE_CONTRADICTION
+
+OUTPUT:
+
+CRITICAL_REVIEW_REPORT
+
+
+# ==========================================================
+# 21. FINAL MODERATOR REVISION
+# ==========================================================
+
+The MODERATOR receives:
+
+FINAL_TEXTUAL_SYNTHESIS
+CRITICAL_REVIEW_REPORT
+
+Produce:
+
+FINAL_ANALYTICAL_RESULT
+
+Apply corrections supported by the source material.
+
+Do not eliminate uncertainty merely to make the final
+result internally coherent.
+
+
+# ==========================================================
+# 22. REQUIRED STRUCTURED OUTPUT
+# ==========================================================
+
+Although collaboration occurs through textual reports,
+the FINAL result must additionally be converted into a
+standardized structure for experimental evaluation.
+
+Return:
+
+1. INPUT_SUMMARY
+
+2. NETWORK_ASSETS
+
+3. RELEVANT_OSINT_CONTEXT
+
+4. CANONICAL_ENTITIES
+
+5. SEMANTIC_RELATIONS
+
+6. RELEVANT_TTPS
+
+7. CONTRADICTIONS
+
+8. INFORMATION_GAPS
+
+9. ATTACK_SCENARIOS
+
+10. ATTRIBUTION_SCENARIOS
+
+11. RESPONSE_SCENARIOS
+
+12. ATTRIBUTION_RESULTS
+
+13. SOURCE_TRACEABILITY
+
+14. AGENT_REPORT_SUMMARY
+
+15. FINAL_ANALYTICAL_REPORT
+
+
+# ==========================================================
+# 23. MACHINE-EVALUABLE SUMMARY
+# ==========================================================
+
+IMPORTANT:
+
+Construct this section ONLY AFTER all textual agent
+collaboration has been completed.
+
+Do NOT use this structure as shared memory during analysis.
+
+ENTITY_SET = [
+  entity_1,
+  entity_2,
+  ...
+]
+
+RELATION_SET = [
+  (source_entity, relation, target_entity),
+  ...
+]
+
+CONTRADICTION_SET = [
+  contradiction_1,
+  ...
+]
+
+ATTACK_SCENARIO_SET = [
+  scenario_1,
+  ...
+]
+
+ATTRIBUTION_SCENARIO_SET = [
+  scenario_1,
+  ...
+]
+
+RESPONSE_SCENARIO_SET = [
+  scenario_1,
+  ...
+]
+
+ATTRIBUTION_HYPOTHESIS_SET = [
+  actor_or_hypothesis_1,
+  ...
+]
+
+TRACEABLE_ASSERTIONS = [
+ {
+   assertion_id,
+   assertion,
+   relation,
+   evidence,
+   source
+ }
+]
+
+UNTRACEABLE_ASSERTIONS = [
+ {
+   assertion_id,
+   assertion,
+   reason
+ }
+]
+
+
+# ==========================================================
+# 24. AGENT REPORT SUMMARY
+# ==========================================================
+
+For experimental analysis additionally return:
+
+AGENT_REPORT_SUMMARY = {
+
+network_analyst:
+{
+entities_identified: ...,
+relations_identified: ...,
+source_supported_claims: ...
+},
+
+entity_analyst:
+{
+entities_identified: ...,
+relations_identified: ...
+},
+
+source_analyst:
+{
+sources_analyzed: ...,
+source_origin_clusters_identified: ...,
+provenance_problems_identified: ...
+},
+
+vulnerability_analyst:
+{
+vulnerabilities_or_weaknesses_identified: ...,
+asset_relations_identified: ...
+},
+
+ttp_analyst:
+{
+TTPs_identified: ...,
+TTP_relations_identified: ...
+},
+
+scenario_analyst:
+{
+attack_scenarios_identified: ...
+},
+
+attribution_analyst:
+{
+attribution_hypotheses_identified: ...
+},
+
+contradiction_analyst:
+{
+contradictions_identified: ...
+},
+
+response_analyst:
+{
+response_scenarios_identified: ...
+}
+}
+
+
+# ==========================================================
+# 25. TEXTUAL-INTEGRATION LOSS REPORT
+# ==========================================================
+
+Compare specialized agent reports with the final moderator
+result.
+
+Identify findings that appeared in at least one specialized
+agent report but were:
+
+- omitted from the final result;
+- merged with another finding;
+- generalized;
+- reinterpreted;
+- assigned a different epistemic status;
+- deprived of their original source reference.
+
+Return:
+
+TEXTUAL_INTEGRATION_LOSS = [
+
+{
+finding_id,
+originating_agent,
+original_finding,
+final_representation,
+change_type,
+source_preserved: TRUE/FALSE
+}
+
+]
+
+This section is for experimental observation only.
+
+Do NOT reconstruct omitted information after detecting the
+loss.
+
+
+# ==========================================================
+# 26. FINAL ANALYTICAL REPORT
+# ==========================================================
+
+Generate a concise analytical report explaining:
+
+- which network assets are most relevant;
+- the most strongly supported initial-compromise mechanisms;
+- credential-access mechanisms;
+- privilege-escalation mechanisms;
+- lateral-movement mechanisms;
+- significant internal target assets;
+- supported attack scenarios;
+- supported response scenarios;
+- viable attribution hypotheses;
+- contradictory evidence;
+- remaining information gaps;
+- conclusions requiring expert review.
+
+Explicitly distinguish:
+
+FACT
+SUPPORTED ASSESSMENT
+HYPOTHESIS
+CONTRADICTION
+INFORMATION GAP
+
+Do not replace uncertainty with a plausible narrative.
+
+
+# ==========================================================
+# 27. EXECUTE
+# ==========================================================
+
+EXECUTE:
+
+Read NETWORK_XML and OSINT_FILE.
+
+Execute specialized agents according to their assigned roles.
+
+Where START_PARALLEL is specified, perform each analytical
+branch independently.
+
+Agents exchange analytical knowledge only through textual
+reports.
+
+Do NOT maintain a shared Semantic Digital Twin.
+
+Do NOT maintain a persistent common semantic graph.
+
+Do NOT use structured graph changes as inter-agent
+communication.
+
+After all textual collaboration is complete, convert the
+final moderator result into the standardized
+MACHINE-EVALUABLE SUMMARY solely for experimental
+measurement.
+
+Return all requested outputs followed by
+FINAL_ANALYTICAL_REPORT.

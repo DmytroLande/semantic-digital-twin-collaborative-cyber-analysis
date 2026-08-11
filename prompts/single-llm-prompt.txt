@@ -1,0 +1,670 @@
+# ==========================================================
+# SINGLE LLM PROMPT
+# Cyber Threat Analysis of a Corporate Network
+# Experimental Mode A
+# Version 1.0
+# ==========================================================
+
+TYPE: SINGLE_LLM
+
+NAME:
+single_llm_cyber_threat_analysis
+
+VERSION:
+1.0
+
+# ==========================================================
+# 1. INPUT PARAMETERS
+# ==========================================================
+
+PARAMETERS:
+
+OSINT_FILE =
+"{name of the file obtained from the InfoStream system}"
+
+NETWORK_XML =
+"{name of the XML file containing the network description}"
+
+THREAT_TOPIC =
+"social engineering through email messages"
+
+# ==========================================================
+# 2. OBJECTIVE
+# ==========================================================
+
+Analyze the corporate network described in NETWORK_XML using
+the factual information contained in OSINT_FILE.
+
+The analysis must investigate the cybersecurity problem defined
+by THREAT_TOPIC and determine:
+
+- relevant network assets;
+- possible initial compromise mechanisms;
+- relevant vulnerabilities and weaknesses;
+- tactics, techniques, and procedures (TTPs);
+- credential-access mechanisms;
+- privilege-escalation mechanisms;
+- lateral-movement mechanisms;
+- tools and malware;
+- possible attack-development scenarios;
+- possible response scenarios;
+- attribution hypotheses, if supported;
+- contradictions;
+- information gaps;
+- source support for significant analytical conclusions.
+
+The initial analytical condition is:
+
+A user workstation may be compromised through email-based
+social engineering.
+
+Determine possible subsequent developments of the attack
+using only the supplied network configuration and the supplied
+OSINT context.
+
+Do NOT assume in advance which internal asset will become
+the final target.
+
+# ==========================================================
+# 3. EXPERIMENTAL RESTRICTION
+# ==========================================================
+
+IMPORTANT:
+
+This is SINGLE LLM MODE.
+
+Perform the entire analysis as one language model.
+
+Do NOT create or simulate multiple agents.
+
+Do NOT use an agent moderator.
+
+Do NOT create a shared agent memory.
+
+Do NOT simulate AgentFlow.
+
+Do NOT iteratively modify a Semantic Digital Twin.
+
+Do NOT describe the result as the output of collaborative
+multi-agent analysis.
+
+All conclusions must be produced directly from the supplied
+NETWORK_XML and OSINT_FILE in one analytical process.
+
+# ==========================================================
+# 4. SOURCE GROUNDING
+# ==========================================================
+
+NETWORK_XML and OSINT_FILE are the only factual sources for
+the experiment.
+
+Do NOT introduce facts solely from internal model knowledge.
+
+Internal model knowledge may be used only for:
+
+- semantic interpretation;
+- classification;
+- entity canonicalization;
+- interpretation of cybersecurity terminology;
+- formulation of analytical hypotheses;
+- identification of possible contradictions.
+
+If a statement is not directly supported by NETWORK_XML or
+OSINT_FILE, mark it as:
+
+HYPOTHESIS
+
+or
+
+INSUFFICIENT_EVIDENCE.
+
+Do not transform a plausible assumption into a factual claim.
+
+# ==========================================================
+# 5. EPISTEMIC STATUS
+# ==========================================================
+
+For every significant statement use one of the following
+statuses:
+
+CONFIRMED
+SUPPORTED
+EXPERT_ASSESSMENT
+CLAIM_OF_RESPONSIBILITY
+HYPOTHESIS
+UNRESOLVED
+CONTRADICTED
+MISSING_EVIDENCE
+
+CONFIRMED:
+directly supported by the supplied source data.
+
+SUPPORTED:
+supported by relevant evidence but not established as a fact
+for the investigated network.
+
+HYPOTHESIS:
+analytically plausible but lacking sufficient direct evidence.
+
+UNRESOLVED:
+available information does not allow a reliable conclusion.
+
+# ==========================================================
+# 6. NETWORK ANALYSIS
+# ==========================================================
+
+Read NETWORK_XML.
+
+Extract all explicitly represented network assets.
+
+For every asset identify, where available:
+
+- asset_id;
+- name;
+- type;
+- role;
+- network segment;
+- IP address;
+- operating system;
+- services;
+- software;
+- security controls;
+- external accessibility;
+- declared network relationships.
+
+Do not reconstruct missing technical attributes.
+
+Use:
+
+UNKNOWN
+
+for information that is not available in NETWORK_XML.
+
+Identify:
+
+- externally accessible assets;
+- user workstations;
+- servers;
+- Domain Controller / DNS resources;
+- internal services;
+- security boundaries;
+- potential initial compromise assets;
+- potentially critical internal assets.
+
+# ==========================================================
+# 7. OSINT CONTEXT ANALYSIS
+# ==========================================================
+
+Read OSINT_FILE.
+
+Analyze the documents with respect to:
+
+THREAT_TOPIC =
+"social engineering through email messages"
+
+and the actual configuration of NETWORK_XML.
+
+Give priority to information concerning:
+
+- phishing;
+- spear phishing;
+- malicious email;
+- malicious attachments;
+- fake IT support;
+- credential theft;
+- credential access;
+- credential dumping;
+- stolen credentials;
+- account compromise;
+- Active Directory;
+- domain accounts;
+- privilege escalation;
+- lateral movement;
+- Windows workstations;
+- Domain Controllers;
+- internal networks.
+
+Extract only information that is relevant to the investigated
+network or to possible development of the investigated threat.
+
+# ==========================================================
+# 8. ENTITY EXTRACTION
+# ==========================================================
+
+Extract and canonicalize relevant entities.
+
+Use the following classes where applicable:
+
+Asset
+Incident
+Target
+Vulnerability
+TTP
+Tool
+Malware
+Infrastructure
+Campaign
+ThreatActor
+Organization
+Person
+SecurityControl
+Credential
+Account
+Evidence
+Source
+Hypothesis
+ResponseAction
+
+For each entity return:
+
+entity_id
+canonical_name
+entity_type
+aliases[]
+sources[]
+epistemic_status
+
+Do not merge entities only because their names are similar.
+
+# ==========================================================
+# 9. RELATION EXTRACTION
+# ==========================================================
+
+Identify explicit or sufficiently supported semantic
+relationships between extracted entities.
+
+Examples of relation types include:
+
+USES
+TARGETS
+EXPLOITS
+AFFECTS
+ENABLES
+PRECEDES
+CAUSES
+SUPPORTS
+CONTRADICTS
+ASSOCIATED_WITH
+ATTRIBUTED_TO
+COMMUNICATES_WITH
+PART_OF
+OBSERVED_IN
+MITIGATES
+POSSIBLY_SAME_AS
+
+For each relation provide:
+
+edge_id
+source_entity
+relation
+target_entity
+evidence
+source_document
+confidence
+epistemic_status
+
+Do NOT create a relation merely because it is technically
+possible.
+
+# ==========================================================
+# 10. ATTACK-PATH ANALYSIS
+# ==========================================================
+
+Starting from the potential initial compromise through
+email-based social engineering, determine plausible
+source-supported paths through the investigated network.
+
+A possible general structure may include:
+
+Social Engineering
+> Compromised Workstation
+> Discovery
+> Credential Access
+> Privilege Escalation
+> Lateral Movement
+> Internal Asset
+
+This structure is illustrative only.
+
+Do NOT force the result to contain all these stages.
+
+Use only stages supported by NETWORK_XML and OSINT_FILE.
+
+For every missing transition explicitly record:
+
+INFORMATION_GAP.
+
+# ==========================================================
+# 11. TTP ANALYSIS
+# ==========================================================
+
+Identify TTPs directly mentioned or clearly supported by
+OSINT_FILE.
+
+Where ATT&CK identifiers are explicitly available in the
+source data, preserve them.
+
+Relate TTPs to:
+
+- network assets;
+- credential mechanisms;
+- tools;
+- malware;
+- attack stages;
+- possible lateral-movement mechanisms.
+
+Do NOT infer a Threat Actor from TTP similarity alone.
+
+# ==========================================================
+# 12. CONTRADICTION ANALYSIS
+# ==========================================================
+
+Identify contradictory or mutually incompatible information.
+
+Distinguish between:
+
+1. an actual contradiction between different sources or
+   analytical claims;
+
+2. alternative attack mechanisms that may both be valid;
+
+3. missing information.
+
+Do not mark alternatives as contradictions merely because
+they differ.
+
+For every contradiction provide:
+
+contradiction_id
+claim_1
+claim_2
+sources[]
+reason
+status
+
+# ==========================================================
+# 13. ATTACK SCENARIOS
+# ==========================================================
+
+Construct all significant attack scenarios supported by the
+available evidence.
+
+For each scenario provide:
+
+scenario_id
+scenario_type = ATTACK
+ordered_steps[]
+related_entities[]
+related_edges[]
+initial_state
+possible_final_state
+supporting_evidence[]
+sources[]
+missing_evidence[]
+confidence
+epistemic_status
+
+Do not generate scenarios that cannot be reconstructed from
+the extracted entities, relations, network structure, and
+OSINT evidence.
+
+# ==========================================================
+# 14. RESPONSE SCENARIOS
+# ==========================================================
+
+Construct response scenarios based on the identified attack
+paths and supported countermeasures in OSINT_FILE.
+
+For each response scenario provide:
+
+scenario_id
+scenario_type = RESPONSE
+trigger
+affected_assets[]
+response_actions[]
+supporting_sources[]
+confidence
+epistemic_status
+
+Separate source-supported countermeasures from general
+recommendations.
+
+# ==========================================================
+# 15. ATTRIBUTION ANALYSIS
+# ==========================================================
+
+Identify candidate Threat Actors only if OSINT_FILE provides
+relevant evidence.
+
+For every candidate actor distinguish:
+
+- direct evidence;
+- indirect evidence;
+- TTP similarity;
+- malware association;
+- infrastructure association;
+- campaign association;
+- contradictory evidence;
+- missing evidence.
+
+Do NOT infer attribution solely because a known Threat Actor
+uses the same TTP.
+
+For every candidate return:
+
+candidate_actor
+supporting_evidence[]
+contradicting_evidence[]
+sources[]
+confidence
+epistemic_status
+
+If no candidate is sufficiently supported, return:
+
+SPECIFIC_ACTOR = NONE
+STATUS = INSUFFICIENT_EVIDENCE
+
+# ==========================================================
+# 16. SOURCE TRACEABILITY
+# ==========================================================
+
+For every significant analytical assertion attempt to retain:
+
+ASSERTION
+> EVIDENCE
+> SOURCE
+
+If the evidence supports a semantic relation, represent:
+
+ASSERTION
+> SEMANTIC_RELATION
+> EVIDENCE
+> SOURCE
+
+Do not invent a source.
+
+If a claim cannot be traced to a supplied document, mark:
+
+SOURCE_NOT_ESTABLISHED.
+
+# ==========================================================
+# 17. INFORMATION GAPS
+# ==========================================================
+
+Identify information that is required to confirm or reject
+significant attack paths or attribution hypotheses.
+
+For every information gap provide:
+
+gap_id
+affected_entity_or_relation
+description
+required_information
+importance
+
+Do not fill information gaps using general model knowledge.
+
+# ==========================================================
+# 18. CRITICAL SELF-CHECK
+# ==========================================================
+
+Before producing the final output verify:
+
+- Are all confirmed network facts present in NETWORK_XML?
+- Are OSINT-derived claims traceable to OSINT_FILE?
+- Were facts and hypotheses separated?
+- Were alternative attack mechanisms preserved?
+- Were unsupported Threat Actor attributions avoided?
+- Were contradictions distinguished from alternatives?
+- Were missing links explicitly marked?
+- Were scenarios derived from identified relations rather
+  than generated independently?
+
+If an unsupported factual statement is found, downgrade it to:
+
+HYPOTHESIS
+
+or
+
+MISSING_EVIDENCE.
+
+# ==========================================================
+# 19. REQUIRED STRUCTURED OUTPUT
+# ==========================================================
+
+Return the following sections.
+
+1. INPUT_SUMMARY
+
+2. NETWORK_ASSETS
+
+3. RELEVANT_OSINT_CONTEXT
+
+4. CANONICAL_ENTITIES
+
+5. SEMANTIC_RELATIONS
+
+6. RELEVANT_TTPS
+
+7. CONTRADICTIONS
+
+8. INFORMATION_GAPS
+
+9. ATTACK_SCENARIOS
+
+10. ATTRIBUTION_SCENARIOS
+
+11. RESPONSE_SCENARIOS
+
+12. ATTRIBUTION_RESULTS
+
+13. SOURCE_TRACEABILITY
+
+14. FINAL_ANALYTICAL_REPORT
+
+# ==========================================================
+# 20. MACHINE-EVALUABLE SUMMARY
+# ==========================================================
+
+At the end provide the following blocks explicitly.
+
+ENTITY_SET = [
+  entity_1,
+  entity_2,
+  ...
+]
+
+RELATION_SET = [
+  (source_entity, relation, target_entity),
+  ...
+]
+
+CONTRADICTION_SET = [
+  contradiction_1,
+  ...
+]
+
+ATTACK_SCENARIO_SET = [
+  scenario_1,
+  ...
+]
+
+ATTRIBUTION_SCENARIO_SET = [
+  scenario_1,
+  ...
+]
+
+RESPONSE_SCENARIO_SET = [
+  scenario_1,
+  ...
+]
+
+ATTRIBUTION_HYPOTHESIS_SET = [
+  actor_or_hypothesis_1,
+  ...
+]
+
+TRACEABLE_ASSERTIONS = [
+ {
+   assertion_id,
+   assertion,
+   relation,
+   evidence,
+   source
+ }
+]
+
+UNTRACEABLE_ASSERTIONS = [
+ {
+   assertion_id,
+   assertion,
+   reason
+ }
+]
+
+# ==========================================================
+# 21. FINAL REPORT
+# ==========================================================
+
+Generate a concise analytical report explaining:
+
+- which network assets are most relevant to the investigated
+  threat;
+- the most strongly supported initial-compromise mechanism;
+- possible credential-access mechanisms;
+- possible privilege-escalation mechanisms;
+- possible lateral-movement paths;
+- the most significant potential target assets;
+- the main supported attack scenarios;
+- relevant response scenarios;
+- whether attribution is possible;
+- significant contradictions;
+- remaining information gaps.
+
+Explicitly distinguish:
+
+FACT
+SUPPORTED ASSESSMENT
+HYPOTHESIS
+CONTRADICTION
+INFORMATION GAP
+
+Do not replace uncertainty with a plausible narrative.
+
+# ==========================================================
+# 22. EXECUTE
+# ==========================================================
+
+EXECUTE:
+
+Read NETWORK_XML and OSINT_FILE.
+
+Perform the entire task as a SINGLE LLM.
+
+Do not simulate agents.
+
+Do not construct or claim to maintain a collaborative
+Semantic Digital Twin.
+
+Return the complete structured output followed by the
+FINAL_ANALYTICAL_REPORT.
