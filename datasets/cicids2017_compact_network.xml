@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<networkModel id="CICIDS2017-compact-victim-network"
+              name="Compact CICIDS2017-derived corporate victim network"
+              version="1.0">
+
+  <metadata>
+    <description>
+      Compact experimental network model derived from the publicly documented
+      CICIDS2017 victim-network configuration. It is intended as an initial
+      infrastructure model for semantic digital twin experiments.
+    </description>
+    <source id="S1"
+            title="CICIDS2017 — Canadian Institute for Cybersecurity, University of New Brunswick"
+            url="https://www.unb.ca/cic/datasets/ids-2017.html"/>
+    <source id="S2"
+            title="Sharafaldin, Lashkari, Ghorbani — Toward Generating a New Intrusion Detection Dataset and Intrusion Traffic Characterization"
+            url="https://cs.unb.ca/research-expo/expos/2018/submissions/20180403-14-56-isharafa-at-unb.ca-toward_generating_a_new_intrusion_detection_dataset_and_intrusion_traffic_characterization.pdf"/>
+    <derivation>
+      Node IP addresses and operating-system labels are taken from the CICIDS2017
+      victim/attacker network description. The XML schema and the compact logical
+      connectivity used here are an experimental abstraction prepared for this study;
+      they are not an original CICIDS2017 XML file.
+    </derivation>
+  </metadata>
+
+  <segments>
+    <segment id="EXT" name="External / Attacker Network"/>
+    <segment id="DMZ" name="Public Services / DMZ"/>
+    <segment id="LAN" name="Corporate LAN"/>
+  </segments>
+
+  <assets>
+    <asset id="FW01" type="firewall" role="perimeter_gateway" segment="DMZ">
+      <name>Firewall</name>
+      <ip scope="public">205.174.165.80</ip>
+      <ip scope="internal">172.16.0.1</ip>
+      <external_accessibility>true</external_accessibility>
+      <sourceRef>S1</sourceRef>
+    </asset>
+
+    <asset id="DC01" type="server" role="dns_domain_controller" segment="LAN">
+      <name>DNS + Domain Controller</name>
+      <ip scope="internal">192.168.10.3</ip>
+      <external_accessibility>false</external_accessibility>
+      <sourceRef>S1</sourceRef>
+    </asset>
+
+    <asset id="WEB01" type="server" role="public_web_server" segment="DMZ">
+      <name>Public Web Server</name>
+      <ip scope="internal">192.168.10.50</ip>
+      <ip scope="public">205.174.165.68</ip>
+      <os>Ubuntu 16</os>
+      <external_accessibility>true</external_accessibility>
+      <sourceRef>S1</sourceRef>
+    </asset>
+
+    <asset id="UBS01" type="server" role="public_ubuntu_server" segment="DMZ">
+      <name>Public Ubuntu Server</name>
+      <ip scope="internal">192.168.10.51</ip>
+      <ip scope="public">205.174.165.66</ip>
+      <os>Ubuntu 12</os>
+      <external_accessibility>true</external_accessibility>
+      <sourceRef>S1</sourceRef>
+    </asset>
+
+    <asset id="WS01" type="workstation" role="employee_workstation" segment="LAN">
+      <name>Windows 7 Workstation</name>
+      <ip scope="internal">192.168.10.9</ip>
+      <os>Windows 7 Pro 64-bit</os>
+      <email_client>true</email_client>
+      <external_accessibility>false</external_accessibility>
+      <sourceRef>S1</sourceRef>
+    </asset>
+
+    <asset id="WS02" type="workstation" role="employee_workstation" segment="LAN">
+      <name>Windows 8.1 Workstation</name>
+      <ip scope="internal">192.168.10.5</ip>
+      <os>Windows 8.1 64-bit</os>
+      <email_client>true</email_client>
+      <external_accessibility>false</external_accessibility>
+      <sourceRef>S1</sourceRef>
+    </asset>
+
+    <asset id="WS03" type="workstation" role="employee_workstation" segment="LAN">
+      <name>Windows Vista Workstation</name>
+      <ip scope="internal">192.168.10.8</ip>
+      <os>Windows Vista 64-bit</os>
+      <email_client>true</email_client>
+      <external_accessibility>false</external_accessibility>
+      <sourceRef>S1</sourceRef>
+    </asset>
+
+    <asset id="WS04" type="workstation" role="employee_workstation" segment="LAN">
+      <name>Windows 10 Workstation A</name>
+      <ip scope="internal">192.168.10.14</ip>
+      <os>Windows 10 Pro 32-bit</os>
+      <email_client>true</email_client>
+      <external_accessibility>false</external_accessibility>
+      <sourceRef>S1</sourceRef>
+    </asset>
+
+    <asset id="WS05" type="workstation" role="employee_workstation" segment="LAN">
+      <name>Windows 10 Workstation B</name>
+      <ip scope="internal">192.168.10.15</ip>
+      <os>Windows 10 64-bit</os>
+      <email_client>true</email_client>
+      <external_accessibility>false</external_accessibility>
+      <sourceRef>S1</sourceRef>
+    </asset>
+
+    <asset id="ATT01" type="attacker_host" role="external_attacker" segment="EXT">
+      <name>Kali Attacker</name>
+      <ip scope="public">205.174.165.73</ip>
+      <os>Kali Linux</os>
+      <external_accessibility>true</external_accessibility>
+      <sourceRef>S1</sourceRef>
+    </asset>
+  </assets>
+
+  <connections>
+    <!-- Published CICIDS2017 documents identify the systems and address spaces,
+         but this compact XML uses a simplified logical connectivity model. -->
+
+    <connection id="C01" from="ATT01" to="FW01" type="external_network_path"/>
+    <connection id="C02" from="FW01" to="WEB01" type="permitted_dmz_path"/>
+    <connection id="C03" from="FW01" to="UBS01" type="permitted_dmz_path"/>
+
+    <connection id="C04" from="FW01" to="DC01" type="controlled_internal_path"/>
+
+    <connection id="C05" from="DC01" to="WS01" type="domain_service"/>
+    <connection id="C06" from="DC01" to="WS02" type="domain_service"/>
+    <connection id="C07" from="DC01" to="WS03" type="domain_service"/>
+    <connection id="C08" from="DC01" to="WS04" type="domain_service"/>
+    <connection id="C09" from="DC01" to="WS05" type="domain_service"/>
+
+    <connection id="C10" from="WS01" to="WEB01" type="internal_service_access"/>
+    <connection id="C11" from="WS02" to="WEB01" type="internal_service_access"/>
+    <connection id="C12" from="WS03" to="WEB01" type="internal_service_access"/>
+    <connection id="C13" from="WS04" to="WEB01" type="internal_service_access"/>
+    <connection id="C14" from="WS05" to="WEB01" type="internal_service_access"/>
+  </connections>
+
+  <experimentalScenario id="SOCIAL-ENGINEERING-01">
+    <title>Email-based social engineering leading to malware infection and lateral movement</title>
+    <initialCompromiseCandidate assetRef="WS03"/>
+    <threatTopic>social engineering through email messages</threatTopic>
+    <note>
+      This scenario is added for the semantic-digital-twin experiment and is
+      not claimed to be an original CICIDS2017 attack scenario.
+    </note>
+  </experimentalScenario>
+
+</networkModel>
