@@ -26,7 +26,7 @@ domain controller, internal services, and user workstations.
 The workstation **WS03** is defined as the potential initial compromise point for
 the investigated social-engineering scenario.
 
-![Model Corporate Network](../figures/art2_5-real-network(1).png)
+![Model Corporate Network](../figures/art2_5-real-network.png)
 
 *Initial corporate network model used as the technical state of the experiment.*
 
@@ -53,7 +53,7 @@ Unlike the initial network topology, the resulting model represents not only
 technical connectivity but also the current semantic state of knowledge about
 the investigated cyber situation.
 
-![Semantic Digital Twin](../figures/art2_5-virt(1).png)
+![Semantic Digital Twin](../figures/art2_5-virt.png)
 
 *Semantic Digital Twin obtained by contextual enrichment of the initial network model.*
 
@@ -77,7 +77,7 @@ Each scenario contains:
 - confidence assessment;
 - evidence support.
 
-![Attack Scenarios](../figures/art2_6-scenar(2).png)
+![Attack Scenarios](../figures/art2_6-scenar.png)
 
 *Attack scenarios derived from the Semantic Digital Twin.*
 
